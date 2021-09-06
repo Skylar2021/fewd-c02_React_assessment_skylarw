@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import SearchBar from '../SearchBar/SearchBar'
 import SearchResults from '../SearchResults/SearchResults'
 import Playlist from '../Playlist/Playlist'
+import Spotify from '../../util/Spotify';
 
 function App(props) {
 	// const [tracks, setTracks] = useState([])
@@ -27,16 +28,18 @@ function App(props) {
 			album: 'Single'
 		}
 	]
-
-	const [searchResults, setSearchResults] = useState(searchResultsinitialState)
+	// searchResultsinitialState
+	// playlistinitialState
+	let playlistinitialState = {
+		id: '4',
+		name: 'Everything I need',
+		artist: 'Skylar Gray',
+		album: 'Aquaman Soundtrack'
+	}
+	const [searchResults, setSearchResults] = useState([])
 	const [playlistName, setPlaylistName] = useState('New Listsss')
 	const [playlistTracks, setPlaylistTracks] = useState([
-		{
-			id: '4',
-			name: 'Everything I need',
-			artist: 'Skylar Gray',
-			album: 'Aquaman Soundtrack'
-		}])
+	])
 	// track should be a object
 	const addTrack = track => {
 		if (playlistTracks.includes(track)) {
@@ -60,8 +63,31 @@ function App(props) {
 		playlistTracks.forEach(track => { trackURIs.push(track.uri) })
 	}
 
-	const search = term =>{
+	async function search(term) {
+		// allows a user to enter a search parameter, receives a response from the Spotify API,
+		// and updates the searchResults state with the results from a Spotify request.
 		console.log(term)
+		let tracks = await Spotify.Search(term)
+		// let  = result.tracks.items
+		console.log(tracks)
+		console.log(tracks[0].album.album_type)
+		console.log(tracks[0].id)
+		console.log(tracks[0].uri)
+		console.log(tracks[0].name)
+		console.log(tracks[0].artists[0].name)
+		// console.log(result.tracks)
+		// return tracks
+		setSearchResults(tracks)
+	}
+
+	// spotify access token
+	let access_token = null
+	if (access_token) {
+		console.log(access_token)
+		return access_token
+	} else {
+		access_token = Spotify.GetAccessToken()
+		console.log(access_token[1])
 	}
 
 	return (
