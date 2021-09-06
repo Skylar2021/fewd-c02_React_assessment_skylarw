@@ -21,7 +21,7 @@ export default function Track({track, onAdd, isRemoval, onRemove}) {
         <div className="Track">
             <div className="Track-information">
                 <h3>{track.name}</h3>
-                <p>{track.artists[0].name} | {track.album.album_type}</p>
+                <p>{track.artists[0].name} | {track.album.name}</p>
                 {/* {console.log(typeof track.artists)} */}
             </div>
                 {renderAction()}

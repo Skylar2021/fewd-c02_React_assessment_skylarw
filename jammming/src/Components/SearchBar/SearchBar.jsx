@@ -4,8 +4,10 @@ import './SearchBar.css'
 export default function SearchBar({onSearch}) {
     const [searchTerm, setSearchTerm] =useState('')
     const search = term =>{
-		console.log(term)
-        
+		// console.log(term)
+        if(!term){
+            return
+        }        
         onSearch(term)
     }
     const handleTermChange = e => {

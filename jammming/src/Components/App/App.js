@@ -62,15 +62,16 @@ function App(props) {
 		let trackURIs = [];
 		playlistTracks.forEach(track => { trackURIs.push(track.uri) })
 	}
+	Spotify.savePlaylist('a', 'b')
 
 	async function search(term) {
 		// allows a user to enter a search parameter, receives a response from the Spotify API,
 		// and updates the searchResults state with the results from a Spotify request.
-		console.log(term)
+		// console.log(term)
 		let tracks = await Spotify.Search(term)
 		// let  = result.tracks.items
 		console.log(tracks)
-		console.log(tracks[0].album.album_type)
+		console.log(tracks[0].album.name)
 		console.log(tracks[0].id)
 		console.log(tracks[0].uri)
 		console.log(tracks[0].name)

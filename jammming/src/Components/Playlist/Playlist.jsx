@@ -5,6 +5,9 @@ import './Playlist.css'
 export default function Playlist({playlistName,playlistTracks, onRemove, onNameChange, onSave}) {
     const handleNameChange = (e) =>{
         let newName = e.target.value
+        if(!newName){
+            return
+        }
         onNameChange(newName)
     }
     return (
