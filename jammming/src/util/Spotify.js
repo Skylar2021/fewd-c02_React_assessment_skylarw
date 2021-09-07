@@ -12,8 +12,8 @@ let token = null, expiredTime = null
 
 // Get a Spotify user’s access token
 let Spotify = {
-    isValidToken(){
-        
+    isValidToken() {
+
     },
     GetAccessToken() {
         if (token) {
@@ -24,7 +24,7 @@ let Spotify = {
         if (token && expiredTime) {
             return token
         } else {
-            window.location = `https://accounts.spotify.com/authorize?${clientID}&${redirectURI}&response_type=token&scope=playlist-modify-public`
+            window.location = `https://accounts.spotify.com/authorize?${clientID}&response_type=token&scope=playlist-modify-public&${redirectURI}`
             // window.setTimeout(() => {
             //     token = null
             // }, expiredTime * 1000)
@@ -42,47 +42,62 @@ let Spotify = {
             let data = await response.json()
             // console.log(data)
             return data.tracks.items
-        }else{
+        } else {
             window.history.pushState('Access Token', null, '/');
-        //     window.location = `https://accounts.spotify.com/authorize?${clientID}&${redirectURI}&response_type=token`
-        //     token = window.location.href.match(/access_token=([^&]*)/)
-        //     expiredTime = window.location.href.match(/expires_in=([^&]*)/)
+            //     window.location = `https://accounts.spotify.com/authorize?${clientID}&${redirectURI}&response_type=token`
+            //     token = window.location.href.match(/access_token=([^&]*)/)
+            //     expiredTime = window.location.href.match(/expires_in=([^&]*)/)
         }
 
     },
-    async savePlaylist(playlistName, tracksURIs){
+    async savePlaylist(playlistName, tracksURIs) {
         console.log('123')
-// GET current user’s ID
+        // GET current user’s ID
 
-        if(!playlistName && !tracksURIs){
+        if (!playlistName && !tracksURIs) {
             return
         }
         let accessToken = Spotify.GetAccessToken()
         console.log(accessToken)
-
-        let headers = { 'Authorization': `Bearer ${accessToken[1]}` };
+        
+        let headers = {
+            'Authorization': `Bearer ${accessToken[1]}`
+        };
         let userID = '';
-        let userProfile = await fetch('https://api.spotify.com/v1/me',{
+        let userProfile = await fetch('https://api.spotify.com/v1/me', {
             method: 'GET',
             headers: headers
         })
-        if(userProfile.ok){
+        if (userProfile.ok) {
             let result = await userProfile.json()
             userID = result.id
             console.log(userID)
-        }else{
+        } else {
             console.log(userProfile.message)
         }
- // POST a new playlist with the input name to the current user’s Spotify account. Receive the playlist ID back from the request.
-// POST the track URIs to the newly-created playlist, referencing the current user’s account (ID) and the new playlist (ID)
-        let newPlaylist = await fetch(`https://api.spotify.com/v1/users/${userID}/playlists`,{
+        // POST a new playlist with the input name to the current user’s Spotify account. Receive the playlist ID back from the request.
+        let newPlaylist = await fetch(`https://api.spotify.com/v1/users/${userID}/playlists`, {
             method: 'POST',
             headers: headers,
-            body: JSON.stringify(playlistName)
+            body: JSON.stringify({ name: playlistName })
         })
-        if(newPlaylist.ok){
-            let playlistID = await newPlaylist.json().id
+        if (newPlaylist.ok) {
+            let playlistInfo = await newPlaylist.json()
+            console.log(playlistInfo)
+            let playlistID = playlistInfo.id
+            console.log(playlistID)
+            // POST the track URIs to the newly-created playlist, referencing the current user’s account (ID) and the new playlist (ID)
+            let addItem = await fetch(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({"uris": tracksURIs})
+            })
+            if(addItem.ok){
+                console.log(addItem)
+            }
         }
+
+
     }
 }
 export default Spotify

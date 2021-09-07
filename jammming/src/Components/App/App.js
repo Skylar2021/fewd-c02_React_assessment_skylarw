@@ -38,8 +38,7 @@ function App(props) {
 	}
 	const [searchResults, setSearchResults] = useState([])
 	const [playlistName, setPlaylistName] = useState('New Listsss')
-	const [playlistTracks, setPlaylistTracks] = useState([
-	])
+	const [playlistTracks, setPlaylistTracks] = useState([])
 	// track should be a object
 	const addTrack = track => {
 		if (playlistTracks.includes(track)) {
@@ -61,8 +60,11 @@ function App(props) {
 		console.log('click')
 		let trackURIs = [];
 		playlistTracks.forEach(track => { trackURIs.push(track.uri) })
+		console.log(trackURIs)
+		Spotify.savePlaylist(playlistName, trackURIs)
+		setPlaylistName('New Playlist')
+		setPlaylistTracks([])
 	}
-	Spotify.savePlaylist('a', 'b')
 
 	async function search(term) {
 		// allows a user to enter a search parameter, receives a response from the Spotify API,
@@ -70,12 +72,12 @@ function App(props) {
 		// console.log(term)
 		let tracks = await Spotify.Search(term)
 		// let  = result.tracks.items
-		console.log(tracks)
-		console.log(tracks[0].album.name)
-		console.log(tracks[0].id)
-		console.log(tracks[0].uri)
-		console.log(tracks[0].name)
-		console.log(tracks[0].artists[0].name)
+		// console.log(tracks)
+		// console.log(tracks[0].album.name)
+		// console.log(tracks[0].id)
+		// console.log(tracks[0].uri)
+		// console.log(tracks[0].name)
+		// console.log(tracks[0].artists[0].name)
 		// console.log(result.tracks)
 		// return tracks
 		setSearchResults(tracks)
